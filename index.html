@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page - PHP Calculator</title>
+    <!-- PyScript dependencies -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.3.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.3.1/core.js"></script>
+
+    <style>
+        :root {
+            --primary-light-pink: #FADDE1;
+            --accent-pink: #FF69B4;       
+            --text-dark-gray: #333333;   
+            --text-medium-gray: #555555;  
+            --text-light-gray: #888888;   
+            --element-black: #1A1A1A;     
+            --border-light-gray: #CCCCCC; 
+            --shadow-color: rgba(0, 0, 0, 0.1); 
+            --pink-shadow: rgba(255, 105, 180, 0.2); 
+            --total-highlight: #28a745;  
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #F8F8F8; 
+            color: var(--text-dark-gray);
+        }
+        .container {
+            background-color: var(--primary-light-pink);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow-color); 
+            max-width: 800px;
+            margin: auto;
+            margin-bottom: 25px;
+        }
+        h1, h2 {
+            color: var(--element-black); 
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5); 
+        }
+        #Restaurant_info {
+            text-align: center;
+            margin-bottom: 35px;
+            padding: 25px;
+            background-color: var(--accent-pink); 
+            border-radius: 10px;
+            box-shadow: 0 2px 10px var(--pink-shadow); 
+            color: white; 
+        }
+        #Restaurant_info h1 {
+            color: white; 
+            font-size: 2.8em;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4); 
+        }
+        #Restaurant_info p {
+            color: #F8F8F8; 
+            font-size: 1.2em;
+            margin: 5px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .order-section {
+            background-color: white; 
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px var(--shadow-color); 
+        }
+
+        .order-item {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-light-gray); 
+        }
+        .order-item:last-of-type {
+            border-bottom: none;
+        }
+        .item-label {
+            font-size: 1.15em;
+            color: var(--text-dark-gray);
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+        .item-price-display {
+            font-weight: bold;
+            color: var(--text-medium-gray); 
+            margin-right: 20px;
+            white-space: nowrap;
+        }
+        .quantity-input {
+            width: 70px;
+            padding: 8px;
+            border: 1px solid var(--border-light-gray);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1.05em;
+            background-color: #fefefe; 
+            color: var(--text-dark-gray);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--accent-pink); 
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.3), inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .calculate-button, .refresh-button {
+            flex: 1;
+            padding: 14px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.15em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+        .calculate-button {
+            background-color: var(--accent-pink);
+            box-shadow: 0 3px 10px var(--pink-shadow);
+        }
+        .calculate-button:hover {
+            background-color: #E05CA0; 
+            box-shadow: 0 5px 15px var(--pink-shadow);
+        }
+        .refresh-button {
+            background-color: var(--element-black); 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .refresh-button:hover {
+            background-color: #333333; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .total-section {
+            text-align: right;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed var(--border-light-gray);
+        }
+        .total-section h2 {
+            margin: 0;
+            color: var(--text-dark-gray);
+            font-size: 1.6em;
+        }
+        #output {
+            text-align: right;
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--total-highlight); 
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-light-gray);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="Restaurant_info">
+            <h1 id="Header">Golden Spoon</h1>
+            <p id="Owner_Name">Owner: Jillian Grospe</p>
+            <p id="Year">1999</p>
+        </div>
+
+        <div class="order-section">
+            <h2>Menu & Order</h2>
+            <form id="orderForm">
+                <div class="order-item">
+                    <span class="item-label">Triple Patty Burger</span>
+                    <span class="item-price-display">PHP 249.99</span>
+                    <input type="number" id="qty_item1" value="0" min="0" class="quantity-input">
+                </div>
+
+                <div class="order-item">
+                    <span class="item-label">Seafood Pasta</span>
+                    <span class="item-price-display">PHP 299.99</span>
+                    <input type="number" id="qty_item2" value="0" min="0" class="quantity-input">
+                </div>
+
+                <div class="order-item">
+                    <span class="item-label">Grilled Salmon</span>
+                    <span class="item-price-display">PHP 399.99</span>
+                    <input type="number" id="qty_item3" value="0" min="0" class="quantity-input">
+                </div>
+
+                <div class="order-item">
+                    <span class="item-label">Red Velvet Lava Cake</span>
+                    <span class="item-price-display">PHP 199.99</span>
+                    <input type="number" id="qty_item4" value="0" min="0" class="quantity-input">
+                </div>
+            </form>
+
+            <div class="button-group">
+                <button class="calculate-button" id="calculate_btn">Calculate Total</button>
+                <button class="refresh-button" id="refresh_btn">Refresh Order</button>
+            </div>
+
+            <div class="total-section">
+                <h2>Your Total:</h2>
+                <div id="output"></div>
+            </div>
+        </div>
+    </div>
+    <py-script src="./main.py"></py-script>
+
+</body>
+</html>
